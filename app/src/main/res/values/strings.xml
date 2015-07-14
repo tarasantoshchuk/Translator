@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Translator</string>
-</resources>
+
+    <string name="btn_close">Close</string>
+    <string name="ttl_connect_fail">Connection failed</string>
+    <string name="msg_connect_fail">Failed to connect to the internet</string>
+    <string name="btn_translate">Translate</string>
+    <string name="btn_swap">Swap</string>
+    <string name="edt_input_hint">enter words to translate</string>
+
+    <string name="client_id">translator_android_antoshchuk</string>
+    <string name="client_secret">UQd+IyrQxApFFbySGXh2fyP6Vp6YONJ3pIP1H/4RIS0=</string>
+    <string name="txt_choose_lang">Choose language</string>
+    <string name="txt_app_logo">application logo</string>
+
+    <string name="txt_wait_lang_init">wait\nlanguage initialization in process</string>
+
+    <string name="txt_check_connection">Check your internet connection</string>
+    <string name="txt_set_target_lang">Choose concrete target language</string>
+    <string name="txt_empty"/>
+ </resources>
