@@ -18,4 +18,8 @@
     <string name="txt_check_connection">Check your internet connection</string>
     <string name="txt_set_target_lang">Choose concrete target language</string>
     <string name="txt_empty"/>
- </resources>
+    <string name="btn_listen">Listen</string>
+    <string name="btn_detailed">Detailed</string>
+
+    <string name="sound_fail">failed to produce sound</string>
+</resources>

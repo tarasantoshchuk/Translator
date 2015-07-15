@@ -13,6 +13,7 @@
         </activity>
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.SetLanguageActivity"/>
+        <activity android:name=".activity.WordInfoActivity"/>
         <service android:name=".service.TranslationService"/>
     </application>
 

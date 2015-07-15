@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.tarasantoshchuk.translator.R;
 import com.example.tarasantoshchuk.translator.service.TranslationService;
 import com.example.tarasantoshchuk.translator.translation.Translator;
+import com.example.tarasantoshchuk.translator.word.WordInfo;
 
 import java.util.ArrayList;
 
@@ -28,22 +29,27 @@ public class MainActivity extends Activity {
     private static final String TRANSLATED_STRING = "TranslatedString";
     private static final String LANGUAGES = "Languages";
     private static final String LANGUAGE = "Language";
+    private static final String WORD_INFO = "WordInfo";
 
     private static final int REQUEST_CODE = 0;
 
     private Receiver mReceiver;
 
     private TextView mTxtResult;
+
     private Button mBtnTranslate;
     private Button mBtnSwap;
+    private Button mBtnDetailed;
+
     private EditText mEdtInput;
+
     private TextView mTxtSourceLang;
     private TextView mTxtTargetLang;
 
     private ArrayList<String> mLanguages;
 
     private enum ResultId {
-        TRANSLATION, ALL_LANGUAGES
+        TRANSLATION, ALL_LANGUAGES, DETAILED
     }
 
     private enum ActivityResultId {
@@ -68,22 +74,31 @@ public class MainActivity extends Activity {
         Translator.Init(getResources());
 
         mTxtResult = (TextView) findViewById(R.id.txtResult);
+
         mBtnTranslate = (Button) findViewById(R.id.btnTranslate);
         mBtnSwap = (Button) findViewById(R.id.btnSwap);
+        mBtnDetailed = (Button) findViewById(R.id.btnDetailed);
+
         mEdtInput = (EditText) findViewById(R.id.edtInput);
-        mTxtSourceLang = (TextView) findViewById(R.id.txtSourceLang);
+
+        mTxtSourceLang = (TextView) findViewById(R.id.txtInfoSourceLang);
         mTxtTargetLang = (TextView) findViewById(R.id.txtTargetLang);
 
         mBtnTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String input = mEdtInput.getText().toString();
+
                 String sourceLang = mTxtSourceLang.getText().toString();
                 String targetLang = mTxtTargetLang.getText().toString();
+
                 Bundle bundle =
                         TranslationService.getTranslationBundle(input, sourceLang, targetLang, mReceiver);
+
                 Intent intent = new Intent(MainActivity.this, TranslationService.class);
+
                 intent.putExtras(bundle);
+
                 startService(intent);
             }
         });
@@ -97,6 +112,26 @@ public class MainActivity extends Activity {
             }
         });
 
+        mBtnDetailed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = mEdtInput.getText().toString();
+
+                String sourceLang = mTxtSourceLang.getText().toString();
+                String targetLang = mTxtTargetLang.getText().toString();
+
+                Bundle bundle =
+                        TranslationService.getDetailedTranslationBundle(input, sourceLang,
+                                targetLang, mReceiver);
+
+                Intent intent = new Intent(MainActivity.this, TranslationService.class);
+
+                intent.putExtras(bundle);
+
+                startService(intent);
+            }
+        });
+
         mTxtSourceLang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,9 +140,11 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Intent intent = new Intent(MainActivity.this, SetLanguageActivity.class);
                 intent.putExtras(SetLanguageActivity.getStartExtras(mLanguages));
                 intent.putExtra(LANGUAGE_TYPE, LanguageType.SOURCE);
+
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -120,9 +157,12 @@ public class MainActivity extends Activity {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Intent intent = new Intent(MainActivity.this, SetLanguageActivity.class);
+
                 intent.putExtras(SetLanguageActivity.getStartExtras(mLanguages));
                 intent.putExtra(LANGUAGE_TYPE, LanguageType.TARGET);
+
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -149,7 +189,7 @@ public class MainActivity extends Activity {
     /**
      * set of methods to return appropriate bundles
      */
-    public static Bundle getTranslationResultBundle(String result) {
+    public static Bundle getTranslationBundle(String result) {
         Bundle bundle = new Bundle();
 
         bundle.putSerializable(RESULT_ID, ResultId.TRANSLATION);
@@ -168,6 +208,16 @@ public class MainActivity extends Activity {
         return bundle;
     }
 
+    public static Bundle getDetailedTranslationBundle(WordInfo info) {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(RESULT_ID, ResultId.DETAILED);
+
+        bundle.putParcelable(WORD_INFO, info);
+
+        return bundle;
+    }
 
     public static Bundle getSetLanguageBundle(Intent intent, String language) {
         Bundle bundle = intent.getExtras();
@@ -198,6 +248,13 @@ public class MainActivity extends Activity {
                     break;
                 case ALL_LANGUAGES:
                     mLanguages = resultData.getStringArrayList(LANGUAGES);
+                    break;
+                case DETAILED:
+                    WordInfo info = resultData.getParcelable(WORD_INFO);
+
+                    Intent intent = new Intent(MainActivity.this, WordInfoActivity.class);
+                    intent.putExtras(WordInfoActivity.getStartExtras(info));
+                    startActivity(intent);
                     break;
             }
         }
