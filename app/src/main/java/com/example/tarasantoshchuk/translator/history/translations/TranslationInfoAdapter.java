@@ -1,4 +1,4 @@
-package com.example.tarasantoshchuk.translator.word;
+package com.example.tarasantoshchuk.translator.history.translations;
 
 import android.view.LayoutInflater;
 import android.view.View;

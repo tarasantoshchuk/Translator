@@ -8,7 +8,7 @@ import android.os.ResultReceiver;
 
 import com.example.tarasantoshchuk.translator.activity.MainActivity;
 import com.example.tarasantoshchuk.translator.translation.Translator;
-import com.example.tarasantoshchuk.translator.word.WordInfo;
+import com.example.tarasantoshchuk.translator.detailed.WordInfo;
 
 import java.util.ArrayList;
 

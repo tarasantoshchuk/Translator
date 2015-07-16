@@ -9,10 +9,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.tarasantoshchuk.translator.R;
-import com.example.tarasantoshchuk.translator.word.TranslationHistory;
-import com.example.tarasantoshchuk.translator.word.TranslationInfoAdapter;
-
-import java.util.ArrayList;
+import com.example.tarasantoshchuk.translator.history.translations.TranslationHistory;
+import com.example.tarasantoshchuk.translator.history.translations.TranslationInfoAdapter;
 
 
 public class TranslationHistoryActivity extends Activity {
@@ -27,10 +25,9 @@ public class TranslationHistoryActivity extends Activity {
 
         setContentView(R.layout.activity_translation_history);
 
-        mBtnDeleteHistory = (Button) findViewById(R.id.btnDeleteHistory);
+        mBtnDeleteHistory = (Button) findViewById(R.id.btnDelTransHistory);
 
-
-        mListHistory = (ListView) findViewById(R.id.listHistory);
+        mListHistory = (ListView) findViewById(R.id.listTransHistory);
 
         TranslationHistory history = getIntent().getParcelableExtra(HISTORY);
 
@@ -45,7 +42,7 @@ public class TranslationHistoryActivity extends Activity {
             public void onClick(View v) {
                 Intent resultData = new Intent();
 
-                resultData.putExtras(MainActivity.getTranslationHistoryBundle());
+                resultData.putExtras(MainActivity.getDeleteTransHistoryBundle());
 
                 setResult(RESULT_OK, resultData);
 

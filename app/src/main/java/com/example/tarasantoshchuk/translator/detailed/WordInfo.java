@@ -1,6 +1,5 @@
-package com.example.tarasantoshchuk.translator.word;
+package com.example.tarasantoshchuk.translator.detailed;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 

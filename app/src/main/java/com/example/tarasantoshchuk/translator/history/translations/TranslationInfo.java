@@ -1,10 +1,9 @@
-package com.example.tarasantoshchuk.translator.word;
+package com.example.tarasantoshchuk.translator.history.translations;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class TranslationInfo implements Parcelable, Serializable {
     private String mSourceWord;

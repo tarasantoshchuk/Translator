@@ -1,4 +1,4 @@
-package com.example.tarasantoshchuk.translator.word;
+package com.example.tarasantoshchuk.translator.history.translations;
 
 import android.os.Parcel;
 import android.os.Parcelable;

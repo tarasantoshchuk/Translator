@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tarasantoshchuk.translator.R;
-import com.example.tarasantoshchuk.translator.word.WordInfo;
+import com.example.tarasantoshchuk.translator.detailed.WordInfo;
 
 import java.io.IOException;
 import java.util.LinkedList;

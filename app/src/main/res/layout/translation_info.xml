@@ -27,8 +27,8 @@
         android:layout_below="@+id/txtTransInfoTrgtLang"
         android:layout_alignRight="@+id/txtTransInfoTrgtLang"
         android:layout_alignEnd="@+id/txtTransInfoTrgtLang"
-        android:layout_toRightOf="@+id/txtCenter"
-        android:layout_toEndOf="@+id/txtCenter"
+        android:layout_toRightOf="@+id/txtTransInfoCenter"
+        android:layout_toEndOf="@+id/txtTransInfoCenter"
         android:gravity="right" />
 
     <TextView
@@ -39,13 +39,13 @@
         android:layout_below="@+id/txtTransInfoSrcLang"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/txtCenter"
-        android:layout_toStartOf="@+id/txtCenter" />
+        android:layout_toLeftOf="@+id/txtTransInfoCenter"
+        android:layout_toStartOf="@+id/txtTransInfoCenter" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/txtCenter"
+        android:id="@+id/txtTransInfoCenter"
         android:layout_alignTop="@+id/txtTransInfoTrgtWord"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

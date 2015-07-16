@@ -13,24 +13,24 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
         android:gravity="center"
-        android:layout_toLeftOf="@+id/btnDeleteHistory"
-        android:layout_toStartOf="@+id/btnDeleteHistory"
-        android:layout_alignBottom="@+id/btnDeleteHistory"
+        android:layout_toLeftOf="@+id/btnDelTransHistory"
+        android:layout_toStartOf="@+id/btnDelTransHistory"
+        android:layout_alignBottom="@+id/btnDelTransHistory"
         android:layout_alignParentTop="true" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listHistory"
+        android:id="@+id/listTransHistory"
         android:layout_centerHorizontal="true"
         android:choiceMode="none"
-        android:layout_below="@+id/btnDeleteHistory" />
+        android:layout_below="@+id/btnDelTransHistory" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_delete"
-        android:id="@+id/btnDeleteHistory"
+        android:text="@string/txt_del_trans_history"
+        android:id="@+id/btnDelTransHistory"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
