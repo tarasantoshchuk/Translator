@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_del_lang_history"
+        android:id="@+id/btnDelLangHistory"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/txt_lang_hist_title"
+        android:id="@+id/txtLangHistoryTitle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/btnDelLangHistory"
+        android:layout_toLeftOf="@+id/btnDelLangHistory"
+        android:layout_toStartOf="@+id/btnDelLangHistory"
+        android:gravity="center" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listLangHistory"
+        android:layout_below="@+id/txtLangHistoryTitle"
+        android:layout_centerHorizontal="true"
+        android:choiceMode="none" />
+</RelativeLayout>

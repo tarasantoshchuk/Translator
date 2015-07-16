@@ -40,11 +40,7 @@ public class TranslationHistoryActivity extends Activity {
         mBtnDeleteHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent resultData = new Intent();
-
-                resultData.putExtras(MainActivity.getDeleteTransHistoryBundle());
-
-                setResult(RESULT_OK, resultData);
+                setResult(RESULT_OK);
 
                 finish();
             }

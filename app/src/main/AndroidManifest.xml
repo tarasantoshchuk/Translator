@@ -15,6 +15,7 @@
         <activity android:name=".activity.SetLanguageActivity"/>
         <activity android:name=".activity.WordInfoActivity"/>
         <activity android:name=".activity.TranslationHistoryActivity"/>
+        <activity android:name=".activity.LanguagesHistoryActivity"/>
         <service android:name=".service.TranslationService"/>
     </application>
 

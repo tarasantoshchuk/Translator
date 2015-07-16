@@ -69,13 +69,13 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/txtResult"
-            android:layout_below="@+id/btnTranslate"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:gravity="center" />
+            android:gravity="center"
+            android:layout_below="@+id/btnHistory" />
 
         <Button
             android:layout_width="wrap_content"
@@ -91,8 +91,18 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_history"
             android:id="@+id/btnHistory"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/btnTranslate"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_lang_history"
+            android:id="@+id/btnLangHistory"
+            android:layout_below="@+id/btnDetailed"
+            android:layout_alignRight="@+id/btnDetailed"
+            android:layout_alignEnd="@+id/btnDetailed" />
 
     </RelativeLayout>
 

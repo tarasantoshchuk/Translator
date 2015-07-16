@@ -15,6 +15,8 @@ import java.util.ArrayList;
 public class SetLanguageActivity extends Activity {
     private static final String LANG_ARRAY = "LangArray";
 
+    public static final String LANG_KEY = "LangKey";
+
     public static Bundle getStartExtras(ArrayList<String> langs) {
         Bundle bundle = new Bundle();
 
@@ -40,9 +42,8 @@ public class SetLanguageActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String language = (String) parent.getItemAtPosition(position);
 
-                Bundle bundle = MainActivity.getSetLanguageBundle(getIntent(), language);
+                setResult(RESULT_OK, new Intent().putExtra(LANG_KEY, language));
 
-                setResult(RESULT_OK, new Intent().putExtras(bundle));
                 finish();
             }
         });

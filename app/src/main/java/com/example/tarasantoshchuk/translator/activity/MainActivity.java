@@ -3,7 +3,6 @@ package com.example.tarasantoshchuk.translator.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
@@ -14,11 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tarasantoshchuk.translator.R;
+import com.example.tarasantoshchuk.translator.history.languages.LanguagesHistory;
+import com.example.tarasantoshchuk.translator.history.languages.LanguagesInfo;
 import com.example.tarasantoshchuk.translator.service.TranslationService;
 import com.example.tarasantoshchuk.translator.translation.Translator;
-import com.example.tarasantoshchuk.translator.word.TranslationHistory;
-import com.example.tarasantoshchuk.translator.word.TranslationInfo;
-import com.example.tarasantoshchuk.translator.word.WordInfo;
+import com.example.tarasantoshchuk.translator.history.translations.TranslationHistory;
+import com.example.tarasantoshchuk.translator.history.translations.TranslationInfo;
+import com.example.tarasantoshchuk.translator.detailed.WordInfo;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,16 +30,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    private static final String RESULT_ID = "ResultId";
-
-    private static final String LANGUAGE_TYPE = "LanguageType";
-
-    private static final String ACTIVITY_TYPE = "ActivityType";
-
-    private static final String TRANSLATED_STRING = "TranslatedString";
-    private static final String LANGUAGES = "Languages";
-    private static final String LANGUAGE = "Language";
-    private static final String WORD_INFO = "WordInfo";
+    private static final int REQUEST_SET_TARGET_LANG = 0;
+    private static final int REQUEST_SET_SOURCE_LANG = 1;
+    private static final int REQUEST_LANG_HISTORY = 2;
+    private static final int REQUEST_TRANS_HISTORY = 3;
 
     /**
      * TEMPORARY: will be changed after task 4 and additional task 3 is finished
@@ -61,7 +56,8 @@ public class MainActivity extends Activity {
      * TEMPORARY: button to check functionality
      * this button will be removed, feature will be available via NavigationDrawer
      */
-    private Button mBtnHistory;
+    private Button mBtnTransHistory;
+    private Button mBtnLangHistory;
 
     private EditText mEdtInput;
 
@@ -70,20 +66,13 @@ public class MainActivity extends Activity {
 
     private ArrayList<String> mLanguages;
 
-    private TranslationHistory mTranslations;
-
+    private TranslationHistory mTransHistory;
     private TranslationInfo mLastTranslation;
+
+    private LanguagesHistory mLangHistory;
 
     private enum ResultId {
         TRANSLATION, ALL_LANGUAGES, DETAILED
-    }
-
-    private enum ActivityResultId {
-        SET_LANG, DELETE_HISTORY
-    }
-
-    private enum LanguageType {
-        TARGET, SOURCE
     }
 
     @Override
@@ -100,6 +89,7 @@ public class MainActivity extends Activity {
         Translator.Init(getResources());
 
         getTranslationHistory();
+        getLanguagesHistory();
 
         mTxtResult = (TextView) findViewById(R.id.txtResult);
 
@@ -107,7 +97,8 @@ public class MainActivity extends Activity {
         mBtnSwap = (Button) findViewById(R.id.btnSwap);
         mBtnDetailed = (Button) findViewById(R.id.btnDetailed);
 
-        mBtnHistory = (Button) findViewById(R.id.btnHistory);
+        mBtnTransHistory = (Button) findViewById(R.id.btnHistory);
+        mBtnLangHistory = (Button) findViewById(R.id.btnLangHistory);
 
         mEdtInput = (EditText) findViewById(R.id.edtInput);
 
@@ -130,6 +121,8 @@ public class MainActivity extends Activity {
                 String targetLang = mTxtTargetLang.getText().toString();
 
                 mLastTranslation = new TranslationInfo(input, sourceLang, targetLang);
+
+                mLangHistory.add(new LanguagesInfo(sourceLang, targetLang));
 
                 Bundle bundle =
                         TranslationService.getTranslationBundle(input, sourceLang, targetLang, mReceiver);
@@ -163,6 +156,8 @@ public class MainActivity extends Activity {
 
                 mLastTranslation = new TranslationInfo(input, sourceLang, targetLang);
 
+                mLangHistory.add(new LanguagesInfo(sourceLang, targetLang));
+
                 Bundle bundle =
                         TranslationService.getDetailedTranslationBundle(input, sourceLang,
                                 targetLang, mReceiver);
@@ -185,10 +180,10 @@ public class MainActivity extends Activity {
                 }
 
                 Intent intent = new Intent(MainActivity.this, SetLanguageActivity.class);
-                intent.putExtras(SetLanguageActivity.getStartExtras(mLanguages));
-                intent.putExtra(LANGUAGE_TYPE, LanguageType.SOURCE);
 
-                startActivityForResult(intent, REQUEST_CODE);
+                intent.putExtras(SetLanguageActivity.getStartExtras(mLanguages));
+
+                startActivityForResult(intent, REQUEST_SET_SOURCE_LANG);
             }
         });
 
@@ -204,27 +199,37 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, SetLanguageActivity.class);
 
                 intent.putExtras(SetLanguageActivity.getStartExtras(mLanguages));
-                intent.putExtra(LANGUAGE_TYPE, LanguageType.TARGET);
 
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, REQUEST_SET_TARGET_LANG);
             }
         });
 
-        mBtnHistory.setOnClickListener(new View.OnClickListener() {
+        mBtnTransHistory.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, TranslationHistoryActivity.class);
 
-                intent.putExtras(TranslationHistoryActivity.getStartExtras(mTranslations));
+                intent.putExtras(TranslationHistoryActivity.getStartExtras(mTransHistory));
 
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, REQUEST_TRANS_HISTORY);
+            }
+        });
+
+        mBtnLangHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LanguagesHistoryActivity.class);
+
+                intent.putExtras(LanguagesHistoryActivity.getStartExtras(mLangHistory));
+
+                startActivityForResult(intent, REQUEST_LANG_HISTORY);
             }
         });
     }
 
     private void getTranslationHistory() {
-        File history = new File(getFilesDir(), getString(R.string.file_history));
+        File history = new File(getFilesDir(), getString(R.string.file_trans_history));
 
         if(history.exists()) {
             FileInputStream fileStream = null;
@@ -235,7 +240,7 @@ public class MainActivity extends Activity {
                 fileStream = new FileInputStream(history.getPath());
                 stream = new ObjectInputStream(fileStream);
 
-                mTranslations = (TranslationHistory)stream.readObject();
+                mTransHistory = (TranslationHistory)stream.readObject();
 
                 return;
 
@@ -260,7 +265,47 @@ public class MainActivity extends Activity {
             }
         }
 
-        mTranslations = new TranslationHistory();
+        mTransHistory = new TranslationHistory();
+    }
+
+    private void getLanguagesHistory() {
+        File history = new File(getFilesDir(), getString(R.string.file_lang_history));
+
+        if(history.exists()) {
+            FileInputStream fileStream = null;
+            ObjectInputStream stream = null;
+
+            try {
+
+                fileStream = new FileInputStream(history.getPath());
+                stream = new ObjectInputStream(fileStream);
+
+                mLangHistory = (LanguagesHistory)stream.readObject();
+
+                return;
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if(fileStream != null) {
+                    try {
+                        fileStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        mLangHistory = new LanguagesHistory();
     }
 
     @Override
@@ -270,17 +315,40 @@ public class MainActivity extends Activity {
             return;
         }
 
-        switch((ActivityResultId)data.getSerializableExtra(ACTIVITY_TYPE)) {
-            case SET_LANG:
-                if(data.getSerializableExtra(LANGUAGE_TYPE) == LanguageType.SOURCE) {
-                    mTxtSourceLang.setText(data.getStringExtra(LANGUAGE));
-                } else {
-                    mTxtTargetLang.setText(data.getStringExtra(LANGUAGE));
-                }
+        switch(requestCode) {
+            case REQUEST_SET_SOURCE_LANG:
+
+                mTxtSourceLang.setText(data.getStringExtra(SetLanguageActivity.LANG_KEY));
+
                 break;
 
-            case DELETE_HISTORY:
-                mTranslations.clear();
+            case REQUEST_SET_TARGET_LANG:
+
+                mTxtTargetLang.setText(data.getStringExtra(SetLanguageActivity.LANG_KEY));
+
+                break;
+
+            case REQUEST_TRANS_HISTORY:
+
+                mTransHistory.clear();
+
+                break;
+
+            case REQUEST_LANG_HISTORY:
+
+                if(data.getBooleanExtra(LanguagesHistoryActivity.DELETE, false)) {
+                    mLangHistory.clear();
+                } else {
+                    mTxtSourceLang.setText(
+                            data.getStringExtra(LanguagesHistoryActivity.SOURCE_LANG));
+
+                    mTxtTargetLang.setText(
+                            data.getStringExtra(LanguagesHistoryActivity.TARGET_LANG));
+                }
+
+
+
+                break;
         }
     }
 
@@ -288,7 +356,12 @@ public class MainActivity extends Activity {
     protected void onStop() {
         super.onStop();
 
-        File history = new File(getFilesDir(), getString(R.string.file_history));
+        saveTransHistory();
+        saveLangHistory();
+    }
+
+    private void saveTransHistory() {
+        File history = new File(getFilesDir(), getString(R.string.file_trans_history));
 
         if(!history.exists()) {
             try {
@@ -307,7 +380,50 @@ public class MainActivity extends Activity {
             fileStream = new FileOutputStream(history.getPath());
             stream = new ObjectOutputStream(fileStream);
 
-            stream.writeObject(mTranslations);
+            stream.writeObject(mTransHistory);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(fileStream != null) {
+                try {
+                    fileStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void saveLangHistory() {
+        File history = new File(getFilesDir(), getString(R.string.file_lang_history));
+
+        if(!history.exists()) {
+            try {
+                history.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+
+        FileOutputStream fileStream = null;
+        ObjectOutputStream stream = null;
+
+        try {
+
+            fileStream = new FileOutputStream(history.getPath());
+            stream = new ObjectOutputStream(fileStream);
+
+            stream.writeObject(mLangHistory);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -331,56 +447,6 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * set of methods to return appropriate bundles
-     */
-    public static Bundle getTranslationBundle(String result) {
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable(RESULT_ID, ResultId.TRANSLATION);
-        bundle.putString(TRANSLATED_STRING, result);
-
-        return bundle;
-    }
-
-    public static Bundle getLanguagesBundle(ArrayList<String> langNames) {
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable(RESULT_ID, ResultId.ALL_LANGUAGES);
-
-        bundle.putStringArrayList(LANGUAGES, langNames);
-
-        return bundle;
-    }
-
-    public static Bundle getDetailedTranslationBundle(WordInfo info) {
-
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable(RESULT_ID, ResultId.DETAILED);
-
-        bundle.putParcelable(WORD_INFO, info);
-
-        return bundle;
-    }
-
-    public static Bundle getSetLanguageBundle(Intent intent, String language) {
-        Bundle bundle = intent.getExtras();
-
-        bundle.putString(LANGUAGE, language);
-        bundle.putSerializable(ACTIVITY_TYPE, ActivityResultId.SET_LANG);
-
-        return bundle;
-    }
-
-    public static Bundle getTranslationHistoryBundle() {
-        Bundle bundle = new Bundle();
-
-        bundle.putSerializable(ACTIVITY_TYPE, ActivityResultId.DELETE_HISTORY);
-
-        return bundle;
-    }
-
-    /**
      * receiver to grab result from translationService
      */
     private class Receiver extends ResultReceiver {
@@ -394,25 +460,26 @@ public class MainActivity extends Activity {
             if(resultCode != RESULT_OK) {
                 throw new RuntimeException();
             }
-            switch((ResultId)resultData.getSerializable(RESULT_ID)) {
+            switch((TranslationService.ResultType)resultData
+                    .getSerializable(TranslationService.RESULT_TYPE)) {
                 case TRANSLATION:
-                    String result = resultData.getString(TRANSLATED_STRING);
+                    String result = resultData.getString(TranslationService.TRANSLATION);
 
                     mTxtResult.setText(result);
                     mLastTranslation.setmTargetWord(result);
 
-                    mTranslations.add(mLastTranslation);
+                    mTransHistory.add(mLastTranslation);
 
                     break;
-                case ALL_LANGUAGES:
-                    mLanguages = resultData.getStringArrayList(LANGUAGES);
+                case LANGUAGES:
+                    mLanguages = resultData.getStringArrayList(TranslationService.LANGUAGES);
                     break;
-                case DETAILED:
-                    WordInfo info = resultData.getParcelable(WORD_INFO);
+                case WORD_INFO:
+                    WordInfo info = resultData.getParcelable(TranslationService.WORD_INFO);
 
                     mLastTranslation.setmTargetWord(info.getmTargetWord());
 
-                    mTranslations.add(mLastTranslation);
+                    mTransHistory.add(mLastTranslation);
 
                     Intent intent = new Intent(MainActivity.this, WordInfoActivity.class);
                     intent.putExtras(WordInfoActivity.getStartExtras(info));

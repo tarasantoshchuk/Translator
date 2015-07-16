@@ -13,6 +13,15 @@ import com.example.tarasantoshchuk.translator.detailed.WordInfo;
 import java.util.ArrayList;
 
 public class TranslationService extends IntentService {
+    public static final String RESULT_TYPE = "ResultType";
+
+    public enum ResultType {
+        WORD_INFO, LANGUAGES, TRANSLATION;
+    }
+
+    public static final String WORD_INFO = "WordInfo";
+    public static final String LANGUAGES = "Languages";
+    public static final String TRANSLATION = "Translation";
 
     private static final String TARGET_LANGUAGE = "TargetLanguage";
     private static final String SOURCE_LANGUAGE = "SourceLanguage";
@@ -65,9 +74,12 @@ public class TranslationService extends IntentService {
         WordInfo info =
                 new WordInfo(sourceLang, targetLang, input, result, sourceSound, targetSound);
 
-        Bundle bundle = MainActivity.getDetailedTranslationBundle(info);
-
         ResultReceiver receiver = intent.getParcelableExtra(RESULT_RECEIVER);
+
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(RESULT_TYPE, ResultType.WORD_INFO);
+        bundle.putParcelable(WORD_INFO, info);
 
         receiver.send(Activity.RESULT_OK, bundle);
     }
@@ -75,7 +87,10 @@ public class TranslationService extends IntentService {
     private void getLanguages(Intent intent) {
         ArrayList<String> langNames = Translator.getAllLanguages();
 
-        Bundle bundle = MainActivity.getLanguagesBundle(langNames);
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(RESULT_TYPE, ResultType.LANGUAGES);
+        bundle.putStringArrayList(LANGUAGES, langNames);
 
         ResultReceiver receiver = intent.getParcelableExtra(RESULT_RECEIVER);
 
@@ -90,7 +105,10 @@ public class TranslationService extends IntentService {
 
         String result = Translator.getTranslation(input, sourceLang, targetLang);
 
-        Bundle bundle = MainActivity.getTranslationBundle(result);
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(RESULT_TYPE, ResultType.TRANSLATION);
+        bundle.putString(TRANSLATION, result);
 
         ResultReceiver receiver = intent.getParcelableExtra(RESULT_RECEIVER);
 

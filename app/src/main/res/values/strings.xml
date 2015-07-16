@@ -24,6 +24,13 @@
     <string name="sound_fail">failed to produce sound</string>
     <string name="txt_trans_hist_title">Translation history</string>
     <string name="btn_history">History</string>
-    <string name="txt_delete">Delete</string>
-    <string name="file_history">history</string>
+
+    <string name="file_trans_history">history_translation</string>
+
+    <string name="txt_del_trans_history">Delete</string>
+
+    <string name="btn_del_lang_history">Delete</string>
+    <string name="txt_lang_hist_title">Languages history</string>
+    <string name="file_lang_history">history_lang</string>
+    <string name="btn_lang_history">Languages</string>
 </resources>
