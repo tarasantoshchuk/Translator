@@ -91,7 +91,7 @@ public class Translator {
                 langNames.add(lang.getName(Language.ENGLISH));
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
         }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/txt_trans_hist_title"
+        android:id="@+id/txtTransHistoryTitle"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:layout_toLeftOf="@+id/btnDeleteHistory"
+        android:layout_toStartOf="@+id/btnDeleteHistory"
+        android:layout_alignBottom="@+id/btnDeleteHistory"
+        android:layout_alignParentTop="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listHistory"
+        android:layout_centerHorizontal="true"
+        android:choiceMode="none"
+        android:layout_below="@+id/btnDeleteHistory" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_delete"
+        android:id="@+id/btnDeleteHistory"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

@@ -22,4 +22,8 @@
     <string name="btn_detailed">Detailed</string>
 
     <string name="sound_fail">failed to produce sound</string>
+    <string name="txt_trans_hist_title">Translation history</string>
+    <string name="btn_history">History</string>
+    <string name="txt_delete">Delete</string>
+    <string name="file_history">history</string>
 </resources>
