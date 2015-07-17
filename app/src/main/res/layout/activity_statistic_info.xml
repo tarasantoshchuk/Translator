@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/txtStatInfoTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/txt_stat_info_title"
+        android:layout_toLeftOf="@+id/btnDeleteStats"
+        android:layout_toStartOf="@+id/btnDeleteStats"
+        android:layout_alignBottom="@+id/btnDeleteStats" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_reset_stats"
+        android:id="@+id/btnDeleteStats"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_first_used"
+        android:id="@+id/txtStatInfoFirstUsed"
+        android:layout_below="@+id/txtStatInfoTitle"
+        android:layout_alignRight="@+id/txtStatInfoLastUsed"
+        android:layout_alignEnd="@+id/txtStatInfoLastUsed" />
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_last_used"
+        android:id="@+id/txtStatInfoLastUsed"
+        android:layout_below="@+id/txtStatInfoFirstUsed"
+        android:layout_alignRight="@+id/txtStatInfoWordsTrans"
+        android:layout_alignEnd="@+id/txtStatInfoWordsTrans" />
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_words_trans"
+        android:id="@+id/txtStatInfoWordsTrans"
+        android:layout_below="@+id/txtStatInfoLastUsed"
+        android:layout_alignRight="@+id/txtStatInfoCharsTrans"
+        android:layout_alignEnd="@+id/txtStatInfoCharsTrans" />
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_chars_trans"
+        android:id="@+id/txtStatInfoCharsTrans"
+        android:layout_below="@+id/txtStatInfoWordsTrans"
+        android:layout_alignRight="@+id/txtStatInfoSrcLangs"
+        android:layout_alignEnd="@+id/txtStatInfoSrcLangs" />
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_src_langs"
+        android:id="@+id/txtStatInfoSrcLangs"
+        android:layout_below="@+id/txtStatInfoCharsTrans"/>
+
+    <TextView
+        style="@style/StatInfoItemTitle"
+        android:text="@string/txt_stat_info_trgt_langs"
+        android:id="@+id/txtStatInfoTrgtLangs"
+        android:layout_below="@+id/txtStatInfoSrcLangs"
+        android:layout_alignRight="@+id/txtStatInfoSrcLangs"
+        android:layout_alignEnd="@+id/txtStatInfoSrcLangs" />
+
+    <TextView
+        style="@style/StatInfoNumberValue"
+        android:id="@+id/txtStatInfoWordsTransVal"
+        android:layout_alignTop="@+id/txtStatInfoWordsTrans"
+        android:layout_toRightOf="@+id/txtStatInfoWordsTrans"/>
+
+    <TextView
+        style="@style/StatInfoNumberValue"
+        android:id="@+id/txtStatInfoCharsTransVal"
+        android:layout_alignTop="@+id/txtStatInfoCharsTrans"
+        android:layout_toRightOf="@+id/txtStatInfoCharsTrans"/>
+
+    <TextView
+        style="@style/StatInfoNumberValue"
+        android:id="@+id/txtStatInfoSrcLangsVal"
+        android:layout_alignTop="@+id/txtStatInfoSrcLangs"
+        android:layout_toRightOf="@+id/txtStatInfoSrcLangs"/>
+
+    <TextView
+        style="@style/StatInfoNumberValue"
+        android:id="@+id/txtStatInfoTrgtLangVal"
+        android:layout_alignTop="@+id/txtStatInfoTrgtLangs"
+        android:layout_toRightOf="@+id/txtStatInfoTrgtLangs" />
+
+    <TextView
+        style="@style/StatInfoDateValue"
+        android:id="@+id/txtStatInfoFirstUsedVal"
+        android:layout_below="@+id/txtStatInfoTitle"
+        android:layout_toRightOf="@+id/txtStatInfoFirstUsed"
+        android:layout_above="@+id/txtStatInfoLastUsed"/>
+
+    <TextView
+        style="@style/StatInfoDateValue"
+        android:id="@+id/txtStatInfoLastUsedVal"
+        android:layout_below="@+id/txtStatInfoFirstUsedVal"
+        android:layout_toRightOf="@+id/txtStatInfoFirstUsed"
+        android:layout_above="@+id/txtStatInfoWordsTrans"/>
+
+</RelativeLayout>

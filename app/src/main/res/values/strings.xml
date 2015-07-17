@@ -33,4 +33,14 @@
     <string name="txt_lang_hist_title">Languages history</string>
     <string name="file_lang_history">history_lang</string>
     <string name="btn_lang_history">Languages</string>
+    <string name="txt_stat_info_title">Statistics</string>
+    <string name="txt_reset_stats">Reset</string>
+    <string name="btn_stats">Stats</string>
+    <string name="file_stats">history_stats</string>
+    <string name="txt_stat_info_first_used">First used</string>
+    <string name="txt_stat_info_last_used">Last used</string>
+    <string name="txt_stat_info_words_trans">Words translated</string>
+    <string name="txt_stat_info_chars_trans">Chars translated</string>
+    <string name="txt_stat_info_src_langs">Source langs used</string>
+    <string name="txt_stat_info_trgt_langs">Target langs used</string>
 </resources>
