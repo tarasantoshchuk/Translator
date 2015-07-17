@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import com.example.tarasantoshchuk.translator.R;
 import com.example.tarasantoshchuk.translator.history.languages.LanguagesHistory;
 import com.example.tarasantoshchuk.translator.history.languages.LanguagesInfo;
 import com.example.tarasantoshchuk.translator.history.statistics.StatisticInfo;
+import com.example.tarasantoshchuk.translator.navigation.NavigationDrawerAdapter;
 import com.example.tarasantoshchuk.translator.service.TranslationService;
 import com.example.tarasantoshchuk.translator.translation.Translator;
 import com.example.tarasantoshchuk.translator.history.translations.TranslationHistory;
@@ -46,24 +49,20 @@ public class MainActivity extends Activity {
 
     private Receiver mReceiver;
 
+    private DrawerLayout mDrawerLayout;
+
     private TextView mTxtResult;
 
     private Button mBtnTranslate;
     private Button mBtnSwap;
     private Button mBtnDetailed;
 
-    /**
-     * TEMPORARY: button to check functionality
-     * this button will be removed, feature will be available via NavigationDrawer
-     */
-    private Button mBtnTransHistory;
-    private Button mBtnLangHistory;
-    private Button mBtnStats;
-
     private EditText mEdtInput;
 
     private TextView mTxtSourceLang;
     private TextView mTxtTargetLang;
+
+    private ListView mLeftDrawer;
 
     private ArrayList<String> mLanguages;
 
@@ -73,10 +72,6 @@ public class MainActivity extends Activity {
     private LanguagesHistory mLangHistory;
 
     private StatisticInfo mStats;
-
-    private enum ResultId {
-        TRANSLATION, ALL_LANGUAGES, DETAILED
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +90,20 @@ public class MainActivity extends Activity {
         getLanguagesHistory();
         getStats();
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+
         mTxtResult = (TextView) findViewById(R.id.txtResult);
 
         mBtnTranslate = (Button) findViewById(R.id.btnTranslate);
         mBtnSwap = (Button) findViewById(R.id.btnSwap);
         mBtnDetailed = (Button) findViewById(R.id.btnDetailed);
 
-        mBtnTransHistory = (Button) findViewById(R.id.btnHistory);
-        mBtnLangHistory = (Button) findViewById(R.id.btnLangHistory);
-        mBtnStats = (Button) findViewById(R.id.btnStats);
-
         mEdtInput = (EditText) findViewById(R.id.edtInput);
 
         mTxtSourceLang = (TextView) findViewById(R.id.txtInfoSourceLang);
         mTxtTargetLang = (TextView) findViewById(R.id.txtTargetLang);
+
+        mLeftDrawer = (ListView) findViewById(R.id.leftDrawer);
 
         /**
          * TEMPORARY: will be changed after task 4 and additional task 3 is finished
@@ -209,40 +204,37 @@ public class MainActivity extends Activity {
             }
         });
 
-        mBtnTransHistory.setOnClickListener(new View.OnClickListener() {
+        mLeftDrawer.setAdapter(new NavigationDrawerAdapter(this));
+    }
 
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TranslationHistoryActivity.class);
+    public void startStatisticActivity() {
+        mDrawerLayout.closeDrawers();
 
-                intent.putExtras(TranslationHistoryActivity.getStartExtras(mTransHistory));
+        Intent intent = new Intent(MainActivity.this, StaticticInfoActivity.class);
 
-                startActivityForResult(intent, REQUEST_TRANS_HISTORY);
-            }
-        });
+        intent.putExtras(StaticticInfoActivity.getStartExtras(mStats));
 
-        mBtnLangHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LanguagesHistoryActivity.class);
+        startActivityForResult(intent, REQUEST_STATS);
+    }
 
-                intent.putExtras(LanguagesHistoryActivity.getStartExtras(mLangHistory));
+    public void startLanguageHistoryActivity() {
+        mDrawerLayout.closeDrawers();
 
-                startActivityForResult(intent, REQUEST_LANG_HISTORY);
-            }
-        });
+        Intent intent = new Intent(MainActivity.this, LanguagesHistoryActivity.class);
 
-        mBtnStats.setOnClickListener(new View.OnClickListener() {
+        intent.putExtras(LanguagesHistoryActivity.getStartExtras(mLangHistory));
 
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, StaticticInfoActivity.class);
+        startActivityForResult(intent, REQUEST_LANG_HISTORY);
+    }
 
-                intent.putExtras(StaticticInfoActivity.getStartExtras(mStats));
+    public void startTranslationHistoryActivity() {
+        mDrawerLayout.closeDrawers();
 
-                startActivityForResult(intent, REQUEST_STATS);
-            }
-        });
+        Intent intent = new Intent(MainActivity.this, TranslationHistoryActivity.class);
+
+        intent.putExtras(TranslationHistoryActivity.getStartExtras(mTransHistory));
+
+        startActivityForResult(intent, REQUEST_TRANS_HISTORY);
     }
 
     private void getTranslationHistory() {

@@ -43,4 +43,10 @@
     <string name="txt_stat_info_chars_trans">Chars translated</string>
     <string name="txt_stat_info_src_langs">Source langs used</string>
     <string name="txt_stat_info_trgt_langs">Target langs used</string>
+
+    <string-array name="navigation_names">
+        <item>Translation history</item>
+        <item>Languages history</item>
+        <item>Statistics</item>
+    </string-array>
 </resources>
