@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
@@ -42,6 +43,20 @@ public class MainActivity extends Activity {
     private static final int REQUEST_LANG_HISTORY = 2;
     private static final int REQUEST_TRANS_HISTORY = 3;
     private static final int REQUEST_STATS = 4;
+    private static final int REQUEST_DETAILED = 5;
+
+    private static final String INPUT = "Input";
+    private static final String RESULT = "Result";
+    private static final String SOURCE_LANG = "SourceLang";
+    private static final String TARGET_LANG = "TargetLang";
+
+    private static final String AUTO_DETECT_LANGUAGE = "AutoDetectLanguage";
+    private static final String LANGUAGES = "Languages";
+    private static final String LANG_HISTORY = "LangHistory";
+    private static final String TRANS_HISTORY = "TransHistory";
+    private static final String STAT_INFO = "StatInfo";
+
+    private String mAutoDetectLanguage;
 
     private InputMethodManager mMethodManager;
 
@@ -54,6 +69,7 @@ public class MainActivity extends Activity {
     private Button mBtnTranslate;
     private Button mBtnSwap;
     private Button mBtnDetailed;
+    private Button mBtnDetectLang;
 
     private EditText mEdtInput;
 
@@ -87,6 +103,7 @@ public class MainActivity extends Activity {
         mBtnTranslate = (Button) findViewById(R.id.btnTranslate);
         mBtnSwap = (Button) findViewById(R.id.btnSwap);
         mBtnDetailed = (Button) findViewById(R.id.btnDetailed);
+        mBtnDetectLang = (Button) findViewById(R.id.btnDetectLang);
 
         mEdtInput = (EditText) findViewById(R.id.edtInput);
 
@@ -96,14 +113,6 @@ public class MainActivity extends Activity {
         mLeftDrawer = (ListView) findViewById(R.id.leftDrawer);
 
         Translator.Init(getResources());
-
-        getTranslationHistory();
-        getLanguagesHistory();
-        getStats();
-
-        getStartLanguages();
-
-        getAllLanguages();
 
         setOnClickListeners();
 
@@ -142,6 +151,42 @@ public class MainActivity extends Activity {
                 hideKeyboard();
             }
         });
+
+        if (savedState != null) {
+
+            mAutoDetectLanguage = savedState.getString(AUTO_DETECT_LANGUAGE);
+
+            mLangHistory = savedState.getParcelable(LANG_HISTORY);
+            mTransHistory = savedState.getParcelable(TRANS_HISTORY);
+
+            mLanguages = savedState.getStringArrayList(LANGUAGES);
+
+            mStats = savedState.getParcelable(STAT_INFO);
+
+            mEdtInput.setText(savedState.getString(INPUT));
+            mTxtResult.setText(savedState.getString(RESULT));
+
+            mTxtSourceLang.setText(savedState.getString(SOURCE_LANG));
+            mTxtTargetLang.setText(savedState.getString(TARGET_LANG));
+        } else {
+            getTranslationHistory();
+            getLanguagesHistory();
+            getStats();
+        }
+
+        if(mAutoDetectLanguage == null ||
+                mTxtSourceLang.getText().toString().equals(getString(R.string.txt_empty)) ||
+                mTxtTargetLang.getText().toString().equals(getString(R.string.txt_empty))) {
+            getStartLanguages();
+        }
+
+        if(mLanguages == null) {
+            mBtnTranslate.setEnabled(false);
+            mBtnDetailed.setEnabled(false);
+            mBtnDetectLang.setEnabled(false);
+            getAllLanguages();
+        }
+
     }
 
 
@@ -175,18 +220,33 @@ public class MainActivity extends Activity {
                 String sourceLang = mTxtSourceLang.getText().toString();
                 String targetLang = mTxtTargetLang.getText().toString();
 
-                mLastTranslation = new TranslationInfo(input, sourceLang, targetLang);
+                /**
+                 * check if word is not empty, source and target languages are different
+                 * and user set concrete target language
+                 */
+                if(!input.equals(getString(R.string.txt_empty)) &&
+                        !sourceLang.equals(targetLang) &&
+                        !targetLang.equals(mAutoDetectLanguage))
+                {
 
-                mLangHistory.add(new LanguagesInfo(sourceLang, targetLang));
+                    mLastTranslation = new TranslationInfo(input, sourceLang, targetLang);
 
-                Bundle bundle =
-                        TranslationService.getTranslationBundle(input, sourceLang, targetLang, mReceiver);
+                    Bundle bundle =
+                            TranslationService.getTranslationBundle(input, sourceLang, targetLang, mReceiver);
 
-                Intent intent = new Intent(MainActivity.this, TranslationService.class);
+                    Intent intent = new Intent(MainActivity.this, TranslationService.class);
 
-                intent.putExtras(bundle);
+                    intent.putExtras(bundle);
 
-                startService(intent);
+                    startService(intent);
+                } else {
+
+                    if(targetLang.equals(mAutoDetectLanguage)) {
+                        mTxtTargetLang.setText(sourceLang);
+                    }
+
+                    mTxtResult.setText(input);
+                }
 
                 hideKeyboard();
             }
@@ -213,28 +273,44 @@ public class MainActivity extends Activity {
         mBtnDetailed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setEnabled(false);
-
                 String input = mEdtInput.getText().toString();
+                String result = mTxtResult.getText().toString();
 
                 String sourceLang = mTxtSourceLang.getText().toString();
                 String targetLang = mTxtTargetLang.getText().toString();
 
-                mLastTranslation = new TranslationInfo(input, sourceLang, targetLang);
+                if(!input.equals(getString(R.string.txt_empty)) &&
+                        !sourceLang.equals(targetLang) &&
+                        !targetLang.equals(mAutoDetectLanguage)) {
 
-                mLangHistory.add(new LanguagesInfo(sourceLang, targetLang));
+                    Intent intent = new Intent(MainActivity.this, WordInfoActivity.class);
 
-                Bundle bundle =
-                        TranslationService.getDetailedTranslationBundle(input, sourceLang,
-                                targetLang, mReceiver);
+                    intent.putExtras(WordInfoActivity.getStartExtras(input, result, sourceLang,
+                            targetLang, mAutoDetectLanguage));
 
-                Intent intent = new Intent(MainActivity.this, TranslationService.class);
+                    startActivityForResult(intent, REQUEST_DETAILED);
+                } else {
+                    hideKeyboard();
 
-                intent.putExtras(bundle);
+                    if (sourceLang.equals(targetLang)) {
+                        Toast.makeText(MainActivity.this, getString(R.string.txt_source_equal_target),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
 
-                startService(intent);
+                    if (input.equals(getString(R.string.txt_empty))) {
+                        Toast.makeText(MainActivity.this, getString(R.string.txt_empty_input),
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
 
-                hideKeyboard();
+                    if (targetLang.equals(mAutoDetectLanguage)) {
+                        Toast.makeText(MainActivity.this,
+                                getString(R.string.txt_choose_target_lang), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                }
+
             }
         });
 
@@ -271,10 +347,25 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, REQUEST_SET_TARGET_LANG);
             }
         });
+
+        mBtnDetectLang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = mEdtInput.getText().toString();
+
+                if(!input.equals(getString(R.string.txt_empty))) {
+                    Intent intent = new Intent(MainActivity.this, TranslationService.class);
+
+                    intent.putExtras(TranslationService.getAutoDetectBundle(input, mReceiver));
+
+                    startService(intent);
+                }
+            }
+        });
     }
 
     private void hideKeyboard() {
-        if(getCurrentFocus()!=null) {
+        if(getCurrentFocus() != null) {
             mMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
@@ -478,6 +569,19 @@ public class MainActivity extends Activity {
                 mStats = new StatisticInfo();
 
                 break;
+
+            case REQUEST_DETAILED:
+
+                TranslationInfo info = data.getParcelableExtra(WordInfoActivity.TRANSLATION_INFO);
+
+                mTxtSourceLang.setText(info.getmSourceLang());
+                mTxtResult.setText(info.getmTargetWord());
+
+                mLangHistory.add(new LanguagesInfo(info.getmSourceLang(), info.getmTargetLang()));
+
+                mTransHistory.add(info);
+
+                break;
         }
     }
 
@@ -638,8 +742,18 @@ public class MainActivity extends Activity {
                 case TRANSLATION:
                     String result = resultData.getString(TranslationService.TRANSLATION);
 
+                    String detectedLang = resultData
+                            .getString(TranslationService.DETECTED_LANGUAGE);
+
+                    mTxtSourceLang.setText(detectedLang);
+
                     mTxtResult.setText(result);
+
+                    mLastTranslation.setmSourceLang(detectedLang);
                     mLastTranslation.setmTargetWord(result);
+
+                    mLangHistory.add(
+                            new LanguagesInfo(detectedLang, mLastTranslation.getmTargetLang()));
 
                     mTransHistory.add(mLastTranslation);
                     mStats.update(mLastTranslation);
@@ -648,20 +762,12 @@ public class MainActivity extends Activity {
                 case LANGUAGES:
                     mLanguages = resultData.getStringArrayList(TranslationService.LANGUAGES);
 
-                    break;
-                case WORD_INFO:
-                    WordInfo info = resultData.getParcelable(TranslationService.WORD_INFO);
+                    mAutoDetectLanguage =
+                            resultData.getString(TranslationService.AUTO_DETECT_LANGUAGE);
 
-                    mLastTranslation.setmTargetWord(info.getmTargetWord());
-
-                    mTransHistory.add(mLastTranslation);
-                    mStats.update(mLastTranslation);
-
-                    Intent intent = new Intent(MainActivity.this, WordInfoActivity.class);
-                    intent.putExtras(WordInfoActivity.getStartExtras(info));
-                    startActivity(intent);
-
+                    mBtnTranslate.setEnabled(true);
                     mBtnDetailed.setEnabled(true);
+                    mBtnDetectLang.setEnabled(true);
 
                     break;
                 case DEFAULTS:
@@ -672,8 +778,38 @@ public class MainActivity extends Activity {
                     mTxtTargetLang.setText(targetLang);
 
                     break;
+                case DETECTION:
+                    String detectedLanguage =
+                            resultData.getString(TranslationService.DETECTED_LANGUAGE);
+
+                    mTxtSourceLang.setText(detectedLanguage);
+
+                    break;
 
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(INPUT, mEdtInput.getText().toString());
+        outState.putString(RESULT, mTxtResult.getText().toString());
+
+        outState.putString(SOURCE_LANG, mTxtSourceLang.getText().toString());
+        outState.putString(TARGET_LANG, mTxtTargetLang.getText().toString());
+
+        outState.putString(AUTO_DETECT_LANGUAGE, mAutoDetectLanguage);
+        outState.putStringArrayList(LANGUAGES, mLanguages);
+
+        outState.putParcelable(LANG_HISTORY, mLangHistory);
+        outState.putParcelable(TRANS_HISTORY, mTransHistory);
+
+        outState.putParcelable(STAT_INFO, mStats);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

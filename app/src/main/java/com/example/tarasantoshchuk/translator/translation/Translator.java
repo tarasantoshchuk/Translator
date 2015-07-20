@@ -3,6 +3,7 @@ package com.example.tarasantoshchuk.translator.translation;
 import android.content.res.Resources;
 
 import com.example.tarasantoshchuk.translator.R;
+import com.memetix.mst.detect.Detect;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.language.SpokenDialect;
 import com.memetix.mst.speak.Speak;
@@ -127,5 +128,28 @@ public class Translator {
     private static SpokenDialect dialectFromString(String lang) {
         Language l = languageFromName(lang);
         return sLangToDialect.get(l);
+    }
+
+    public static String getDetectedLanguage(String input) {
+        try {
+
+            Language source = Detect.execute(input);
+            return source.getName(Language.ENGLISH);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            throw new RuntimeException(e);
+
+        }
+    }
+
+    public static String getAutoDetectLang() {
+        try {
+            return Language.AUTO_DETECT.getName(Language.ENGLISH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

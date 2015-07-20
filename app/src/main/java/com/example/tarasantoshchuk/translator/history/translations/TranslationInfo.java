@@ -51,7 +51,10 @@ public class TranslationInfo implements Parcelable, Serializable {
 
     public String getmSourceLang() {
         return mSourceLang;
+    }
 
+    public void setmSourceLang(String mSourceLang) {
+        this.mSourceLang = mSourceLang;
     }
 
     public static final Parcelable.Creator<TranslationInfo> CREATOR =

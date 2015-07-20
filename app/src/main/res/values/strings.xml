@@ -46,6 +46,9 @@
     <string name="txt_trans_history_empty">Your translations history is empty</string>
     <string name="txt_back">Back</string>
     <string name="txt_lang_history_empty">Your languages history is empty</string>
+    <string name="txt_source_equal_target">source and target languages are equal</string>
+    <string name="txt_empty_input">input is empty</string>
+    <string name="txt_choose_target_lang">choose concrete target language</string>
 
     <string-array name="navigation_names">
         <item>Translation history</item>
