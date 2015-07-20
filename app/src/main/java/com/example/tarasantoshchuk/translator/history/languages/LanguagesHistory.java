@@ -33,7 +33,8 @@ public class LanguagesHistory implements Serializable, Parcelable {
          */
         for(LanguagesInfo info: list) {
             if(lInfo.equals(info)) {
-                return;
+                list.remove(info);
+                break;
             }
         }
 
@@ -80,10 +81,23 @@ public class LanguagesHistory implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeInt(list.size());
 
         for(LanguagesInfo lInfo: list) {
             dest.writeParcelable(lInfo, 0);
         }
+    }
+
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    public String getLastSourceLang() {
+        return list.getFirst().getmSourceLanguage();
+    }
+
+    public String getLastTargetLang() {
+        return list.getFirst().getmTargetLanguage();
     }
 }

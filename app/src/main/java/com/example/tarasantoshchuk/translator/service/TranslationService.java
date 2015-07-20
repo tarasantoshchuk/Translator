@@ -16,12 +16,15 @@ public class TranslationService extends IntentService {
     public static final String RESULT_TYPE = "ResultType";
 
     public enum ResultType {
-        WORD_INFO, LANGUAGES, TRANSLATION;
+        WORD_INFO, LANGUAGES, TRANSLATION, DEFAULTS
     }
 
     public static final String WORD_INFO = "WordInfo";
     public static final String LANGUAGES = "Languages";
     public static final String TRANSLATION = "Translation";
+
+    public static final String DEFAULT_SRC_LANG = "DefaultSrcLang";
+    public static final String DEFAULT_TRGT_LANG = "DefulatTrgtLang";
 
     private static final String TARGET_LANGUAGE = "TargetLanguage";
     private static final String SOURCE_LANGUAGE = "SourceLanguage";
@@ -41,7 +44,7 @@ public class TranslationService extends IntentService {
     }
 
     public enum IntentType {
-        TRANSLATION, ALL_LANGUAGES, DETAIL
+        TRANSLATION, ALL_LANGUAGES, DETAIL, DEFAULTS
     }
 
     @Override
@@ -55,6 +58,9 @@ public class TranslationService extends IntentService {
                 break;
             case DETAIL:
                 getWordInfo(intent);
+                break;
+            case DEFAULTS:
+                getDefaultLanguages(intent);
                 break;
         }
     }
@@ -115,6 +121,19 @@ public class TranslationService extends IntentService {
         receiver.send(Activity.RESULT_OK, bundle);
     }
 
+    private void getDefaultLanguages(Intent intent) {
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(RESULT_TYPE, ResultType.DEFAULTS);
+
+        bundle.putString(DEFAULT_SRC_LANG, Translator.getDefaultSourceLang());
+        bundle.putString(DEFAULT_TRGT_LANG, Translator.getDefaultTargetLang());
+
+        ResultReceiver receiver = intent.getParcelableExtra(RESULT_RECEIVER);
+
+        receiver.send(Activity.RESULT_OK, bundle);
+    }
+
     public static Bundle getTranslationBundle(String input, String source, String target,
                                        ResultReceiver receiver) {
 
@@ -137,6 +156,17 @@ public class TranslationService extends IntentService {
         Bundle bundle = new Bundle();
 
         bundle.putSerializable(INTENT_TYPE, IntentType.ALL_LANGUAGES);
+
+        bundle.putParcelable(RESULT_RECEIVER, receiver);
+
+        return bundle;
+    }
+
+
+    public static Bundle getDefaultLangsBundle(ResultReceiver receiver) {
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(INTENT_TYPE, IntentType.DEFAULTS);
 
         bundle.putParcelable(RESULT_RECEIVER, receiver);
 

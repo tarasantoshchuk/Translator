@@ -1,6 +1,8 @@
 package com.example.tarasantoshchuk.translator.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -58,14 +60,13 @@ public class LanguagesHistoryActivity extends Activity {
         });
 
         mListHistory.setOnItemClickListener(new ListView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 View currentView = parent.getChildAt(position);
 
                 LanguagesInfoAdapter.LanguagesInfoViewHolder holder =
-                        (LanguagesInfoAdapter.LanguagesInfoViewHolder)currentView.getTag();
+                        (LanguagesInfoAdapter.LanguagesInfoViewHolder) currentView.getTag();
 
                 String sourceLang = holder.txtSourceLang.getText().toString();
                 String targetLang = holder.txtTargetLang.getText().toString();
@@ -82,6 +83,23 @@ public class LanguagesHistoryActivity extends Activity {
                 finish();
             }
         });
+
+        if (mListHistory.getAdapter().getCount() == 0) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.txt_lang_history_empty))
+                    .setCancelable(false)
+                    .setNeutralButton(getString(R.string.txt_back),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setResult(RESULT_CANCELED);
+                                    finish();
+                                }
+                            });
+
+            builder.create().show();
+        }
     }
 
     public static Bundle getStartExtras(LanguagesHistory history) {

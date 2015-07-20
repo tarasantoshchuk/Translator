@@ -1,6 +1,8 @@
 package com.example.tarasantoshchuk.translator.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,7 +34,7 @@ public class TranslationHistoryActivity extends Activity {
         TranslationHistory history = getIntent().getParcelableExtra(HISTORY);
 
         final LayoutInflater inflater = getLayoutInflater();
-        
+
         TranslationInfoAdapter adapter = new TranslationInfoAdapter(inflater, history);
 
         mListHistory.setAdapter(adapter);
@@ -45,6 +47,23 @@ public class TranslationHistoryActivity extends Activity {
                 finish();
             }
         });
+
+        if(mListHistory.getAdapter().getCount() == 0) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage(R.string.txt_trans_history_empty)
+                    .setCancelable(false)
+                    .setNeutralButton(getString(R.string.txt_back),
+                            new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            setResult(RESULT_CANCELED);
+                            finish();
+                        }
+                    });
+
+            builder.create().show();
+        }
     }
 
     public static Bundle getStartExtras(TranslationHistory history) {

@@ -7,7 +7,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -40,12 +43,7 @@ public class MainActivity extends Activity {
     private static final int REQUEST_TRANS_HISTORY = 3;
     private static final int REQUEST_STATS = 4;
 
-    /**
-     * TEMPORARY: will be changed after task 4 and additional task 3 is finished
-     * (loading latest language combinations)
-     */
-    private static final String DEFAULT_SOURCE_LANG = "English";
-    private static final String DEFAULT_TARGET_LANG = "Ukrainian";
+    private InputMethodManager mMethodManager;
 
     private Receiver mReceiver;
 
@@ -74,21 +72,13 @@ public class MainActivity extends Activity {
     private StatisticInfo mStats;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
         setContentView(R.layout.activity_main);
 
         mReceiver = new Receiver(new Handler(Looper.getMainLooper()));
 
-        Intent intent = new Intent(this, TranslationService.class);
-        intent.putExtras(TranslationService.getLanguagesBundle(mReceiver));
-        startService(intent);
-
-        Translator.Init(getResources());
-
-        getTranslationHistory();
-        getLanguagesHistory();
-        getStats();
+        mMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
 
@@ -105,13 +95,78 @@ public class MainActivity extends Activity {
 
         mLeftDrawer = (ListView) findViewById(R.id.leftDrawer);
 
-        /**
-         * TEMPORARY: will be changed after task 4 and additional task 3 is finished
-         * (loading latest language combinations)
-         */
-        mTxtSourceLang.setText(DEFAULT_SOURCE_LANG);
-        mTxtTargetLang.setText(DEFAULT_TARGET_LANG);
+        Translator.Init(getResources());
 
+        getTranslationHistory();
+        getLanguagesHistory();
+        getStats();
+
+        getStartLanguages();
+
+        getAllLanguages();
+
+        setOnClickListeners();
+
+        mEdtInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mTxtResult.setText(R.string.txt_empty);
+            }
+        });
+
+        mLeftDrawer.setAdapter(new NavigationDrawerAdapter(this));
+
+        mDrawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                hideKeyboard();
+            }
+        });
+    }
+
+
+    private void getStartLanguages() {
+        if(!mLangHistory.isEmpty()) {
+
+            mTxtSourceLang.setText(mLangHistory.getLastSourceLang());
+            mTxtTargetLang.setText(mLangHistory.getLastTargetLang());
+
+        } else {
+
+            Intent intent = new Intent(this, TranslationService.class);
+            intent.putExtras(TranslationService.getDefaultLangsBundle(mReceiver));
+            startService(intent);
+
+        }
+    }
+
+    private void getAllLanguages() {
+        Intent intent = new Intent(this, TranslationService.class);
+        intent.putExtras(TranslationService.getLanguagesBundle(mReceiver));
+        startService(intent);
+    }
+
+    private void setOnClickListeners() {
         mBtnTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +187,8 @@ public class MainActivity extends Activity {
                 intent.putExtras(bundle);
 
                 startService(intent);
+
+                hideKeyboard();
             }
         });
 
@@ -141,6 +198,15 @@ public class MainActivity extends Activity {
                 CharSequence buffer = mTxtSourceLang.getText();
                 mTxtSourceLang.setText(mTxtTargetLang.getText());
                 mTxtTargetLang.setText(buffer);
+
+                /**
+                 * if translation is on screen - just swap it with input
+                 */
+                if(!mTxtResult.getText().toString().equals(getString(R.string.txt_empty))) {
+                    buffer = mEdtInput.getText();
+                    mEdtInput.setText(mTxtResult.getText());
+                    mTxtResult.setText(buffer);
+                }
             }
         });
 
@@ -167,6 +233,8 @@ public class MainActivity extends Activity {
                 intent.putExtras(bundle);
 
                 startService(intent);
+
+                hideKeyboard();
             }
         });
 
@@ -203,8 +271,12 @@ public class MainActivity extends Activity {
                 startActivityForResult(intent, REQUEST_SET_TARGET_LANG);
             }
         });
+    }
 
-        mLeftDrawer.setAdapter(new NavigationDrawerAdapter(this));
+    private void hideKeyboard() {
+        if(getCurrentFocus()!=null) {
+            mMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
     }
 
     public void startStatisticActivity() {
@@ -369,11 +441,15 @@ public class MainActivity extends Activity {
 
                 mTxtSourceLang.setText(data.getStringExtra(SetLanguageActivity.LANG_KEY));
 
+                mTxtResult.setText(R.string.txt_empty);
+
                 break;
 
             case REQUEST_SET_TARGET_LANG:
 
                 mTxtTargetLang.setText(data.getStringExtra(SetLanguageActivity.LANG_KEY));
+
+                mTxtResult.setText(R.string.txt_empty);
 
                 break;
 
@@ -588,6 +664,15 @@ public class MainActivity extends Activity {
                     mBtnDetailed.setEnabled(true);
 
                     break;
+                case DEFAULTS:
+                    String sourceLang = resultData.getString(TranslationService.DEFAULT_SRC_LANG);
+                    String targetLang = resultData.getString(TranslationService.DEFAULT_TRGT_LANG);
+
+                    mTxtSourceLang.setText(sourceLang);
+                    mTxtTargetLang.setText(targetLang);
+
+                    break;
+
             }
         }
     }

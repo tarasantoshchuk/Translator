@@ -32,7 +32,8 @@ public class TranslationHistory implements Serializable, Parcelable{
          */
         for(TranslationInfo info: list) {
             if(info.equals(tInfo)) {
-                return;
+                list.remove(info);
+                break;
             }
         }
 

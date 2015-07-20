@@ -106,6 +106,24 @@ public class Translator {
         }
     }
 
+    public static String getDefaultSourceLang() {
+        try {
+            return Language.ENGLISH.getName(Language.ENGLISH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getDefaultTargetLang() {
+        try {
+            return Language.UKRAINIAN.getName(Language.ENGLISH);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     private static SpokenDialect dialectFromString(String lang) {
         Language l = languageFromName(lang);
         return sLangToDialect.get(l);
