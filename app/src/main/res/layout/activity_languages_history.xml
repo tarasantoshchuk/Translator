@@ -4,8 +4,7 @@
     android:layout_height="match_parent">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Button"
         android:text="@string/btn_del_lang_history"
         android:id="@+id/btnDelLangHistory"
         android:layout_alignParentTop="true"
@@ -13,9 +12,7 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/Title"
         android:text="@string/txt_lang_hist_title"
         android:id="@+id/txtLangHistoryTitle"
         android:layout_alignParentTop="true"
@@ -23,8 +20,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignBottom="@+id/btnDelLangHistory"
         android:layout_toLeftOf="@+id/btnDelLangHistory"
-        android:layout_toStartOf="@+id/btnDelLangHistory"
-        android:gravity="center" />
+        android:layout_toStartOf="@+id/btnDelLangHistory" />
 
     <ListView
         android:layout_width="wrap_content"

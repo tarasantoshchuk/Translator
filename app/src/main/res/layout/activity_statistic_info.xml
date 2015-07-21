@@ -4,21 +4,17 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/Title"
         android:id="@+id/txtStatInfoTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:gravity="center"
         android:text="@string/txt_stat_info_title"
         android:layout_toLeftOf="@+id/btnDeleteStats"
         android:layout_toStartOf="@+id/btnDeleteStats"
         android:layout_alignBottom="@+id/btnDeleteStats" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Button"
         android:text="@string/txt_reset_stats"
         android:id="@+id/btnDeleteStats"
         android:layout_alignParentTop="true"

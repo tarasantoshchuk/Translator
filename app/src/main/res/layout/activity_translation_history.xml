@@ -4,15 +4,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        style="@style/Title"
         android:text="@string/txt_trans_hist_title"
         android:id="@+id/txtTransHistoryTitle"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="true"
-        android:gravity="center"
         android:layout_toLeftOf="@+id/btnDelTransHistory"
         android:layout_toStartOf="@+id/btnDelTransHistory"
         android:layout_alignBottom="@+id/btnDelTransHistory"
@@ -27,8 +24,7 @@
         android:layout_below="@+id/btnDelTransHistory" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Button"
         android:text="@string/txt_del_trans_history"
         android:id="@+id/btnDelTransHistory"
         android:layout_alignParentTop="true"

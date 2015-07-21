@@ -16,7 +16,7 @@ import com.example.tarasantoshchuk.translator.R;
 
 public class StartActivity extends Activity {
 
-    private static final int SPLASH_SCREEN_DURATION = 1000;
+    private static final int SPLASH_SCREEN_DURATION = 2000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -34,8 +34,7 @@
             android:layout_toEndOf="@+id/btnSwap" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Button"
             android:text="@string/btn_swap"
             android:id="@+id/btnSwap"
             android:layout_alignParentTop="true"
@@ -55,8 +54,7 @@
             android:layout_below="@+id/btnSwap" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Button"
             android:text="@string/btn_translate"
             android:id="@+id/btnTranslate"
             android:layout_centerVertical="true"
@@ -77,8 +75,7 @@
             android:layout_below="@+id/btnTranslate" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Button"
             android:text="@string/btn_detailed"
             android:id="@+id/btnDetailed"
             android:layout_centerVertical="true"
@@ -86,9 +83,8 @@
             android:layout_alignParentEnd="true" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Detect Language"
+            style="@style/Button"
+            android:text="@string/txt_detect_lang"
             android:id="@+id/btnDetectLang"
             android:layout_below="@+id/edtInput"
             android:layout_centerHorizontal="true" />

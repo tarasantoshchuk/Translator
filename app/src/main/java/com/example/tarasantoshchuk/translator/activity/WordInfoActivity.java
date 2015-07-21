@@ -88,9 +88,6 @@ public class WordInfoActivity extends Activity {
         mBtnListenSource.setEnabled(false);
         mBtnListenTarget.setEnabled(false);
 
-        mBtnListenSource.setVisibility(View.INVISIBLE);
-        mBtnListenTarget.setVisibility(View.INVISIBLE);
-
         mTxtInfoSourceLang = (TextView) findViewById(R.id.txtInfoSourceLang);
         mTxtInfoTargetLang = (TextView) findViewById(R.id.txtInfoTargetLang);
 
@@ -120,8 +117,8 @@ public class WordInfoActivity extends Activity {
     private void setButton(Button button, final String soundUrl) {
         if(soundUrl != null) {
 
+            button.setText(getString(R.string.btn_listen));
             button.setEnabled(true);
-            button.setVisibility(View.VISIBLE);
 
             button.setOnClickListener(new View.OnClickListener() {
 
@@ -151,7 +148,7 @@ public class WordInfoActivity extends Activity {
 
                         @Override
                         protected void onPostExecute(Boolean aBoolean) {
-                            if(aBoolean) {
+                            if (aBoolean) {
                                 mPlayer.start();
                             } else {
 
@@ -169,7 +166,6 @@ public class WordInfoActivity extends Activity {
                     task.execute(soundUrl);
                 }
             });
-
         }
     }
 

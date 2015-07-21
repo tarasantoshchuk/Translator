@@ -9,5 +9,6 @@
         android:id="@+id/imgBackground"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/translate_logo"
-        android:contentDescription="@string/txt_app_logo" />
+        android:contentDescription="@string/txt_app_logo"
+        android:background="@color/blue" />
 </LinearLayout>
